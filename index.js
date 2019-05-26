@@ -114,6 +114,53 @@ server.get('/api/bears', (req, res) => {
     });
 });
 
+// (Get - bear by id)
+server.get('/api/bears/:id', (req, res) => {
+  db('bears').where({ id: req.params.id })
+    .first()
+    .then(bear => {
+      if (bear) {
+        res.status(201).json(bear)
+      } else {
+        res.status(404).json({ message: "Bear not found." });
+      }
+    })
+    .catch(error => {
+      res.status(404).json({ error: "The specified id does not exists." });
+    });
+});
+
+
+// (Delete - bear by id)
+server.delete('/api/bears/:id', (req, res) => {
+  db('bears').where({ id: req.params.id }).del(req.body)
+    .then(count => {
+      if (count > 0) {
+        res.status(200).json(`${count} record deleted`);
+      } else {
+        res.status(404).json({ message: "Bear does not exists" });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ error: "Unable to delete the specified id." });
+    })
+});
+
+// (Put - update bears by id)
+server.put('/api/bears/:id', (req, res) => {
+  db('bears').where({ id: req.params.id }).update(req.body)
+    .then(count => {
+      if (count > 0) {
+        res.status(200).json({ message: `${count} record updated` });
+      } else {
+        res.status(404).json({ message: "Bear does not exisit." });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({ error: "Unable to updates the specified id." });
+    })
+});
+
 
 const port = 3300;
 server.listen(port, function () {
