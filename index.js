@@ -35,6 +35,7 @@ server.post('/api/zoos', (req, res) => {
 // (Get - zoos)
 server.get('/api/zoos', (req, res) => {
   db('zoos')
+    .first()
     .then(zoos => {
       res.status(201).json(zoos)
     })
@@ -90,6 +91,29 @@ server.put('/api/zoos/:id', (req, res) => {
 });
 
 // STRETCH \\
+
+server.post('/api/bears', (req, res) => {
+  db('bears').insert(req.body, ['name'])
+    .then(bear => {
+      res.status(200).json(bear);
+    })
+    .catch(error => {
+      res.status(404).json({ error: "Unable to add to the database try again.", error });
+    });
+});
+
+// (Get - All bears from the database)
+server.get('/api/bears', (req, res) => {
+  db('bears')
+    .first()
+    .then(bear => {
+      res.status(201).json(bear)
+    })
+    .catch(error => {
+      res.status(404).json({ error: "Unable to retrieve the specified request." });
+    });
+});
+
 
 const port = 3300;
 server.listen(port, function () {
